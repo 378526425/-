@@ -1,0 +1,17 @@
+wxmfast:
+  config:
+    auth:
+      #是否启动redis
+      redis-enable: false
+      #多端在线
+      many-online: false
+      #令牌自定义标识
+      authorization: Authorization
+      #令牌前缀
+      prefix: Bearer
+      #令牌秘钥
+      secret: abcdefghijklmnopqrstuvwxyz
+      #token有效期（分钟）
+      expiration: 30
+      #token失效刷新时间（分钟）
+      refresh: 3
