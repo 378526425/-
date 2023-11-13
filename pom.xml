@@ -6,7 +6,7 @@
     <groupId>com.wxmblog</groupId>
     <artifactId>msfast-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>msfast</name>
     <description>聚合服务</description>
 
@@ -21,10 +21,9 @@
         <spring.cloud.version>2021.0.1</spring.cloud.version>
         <spring.cloud.alibaba.version>2021.0.1.0</spring.cloud.alibaba.version>
         <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
-        <msfast.base.common.version>0.0.1-SNAPSHOT</msfast.base.common.version>
+        <msfast.base.common.version>0.0.1</msfast.base.common.version>
         <springboot.maven.plugin.version>2.7.6</springboot.maven.plugin.version>
         <maven.test.skip>true</maven.test.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <dependencyManagement>
@@ -110,14 +109,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
                 <configuration>
-                    <additionalOptions>
-                        <additionalOption>-Xdoclint:none</additionalOption>
-                    </additionalOptions>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <!-- TODO 临时解决不规范的javadoc生成报错,后面要规范化后把这行去掉 -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>attach-javadocs</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
