@@ -21,7 +21,7 @@ bash startup.sh -m standalone
 
 Windows
 启动命令(standalone代表着单机模式运行，非集群模式):
- docker run -d   -p 9000:9000 -p 9091:9090   --name minio   -v /home/minio/data:/data   -e "MINIO_ROOT_USER=minioadmin"   -e "MINIO_ROOT_PASSWORD=Mo5497071966@"   minio/minio server /data --console-address ":9090"
+ docker run -d   -p 9000:9000 -p 9091:9090   --name minio   -v /home/minio/data:/data   -e "MINIO_ROOT_USER=minioadmin"   -e "MINIO_ROOT_PASSWORD=Mo"   minio/minio server /data --console-address ":9090"
 
 
 startup.cmd -m standalone
