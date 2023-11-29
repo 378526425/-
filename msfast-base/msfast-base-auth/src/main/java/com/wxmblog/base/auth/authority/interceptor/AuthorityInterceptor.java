@@ -82,7 +82,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
 
         //校验是否拥有相关权限
         TokenValidService tokenValidService = SpringUtils.getBean(TokenValidService.class);
-        if (!Boolean.TRUE.equals(tokenValidService.hasPermission())) {
+        if (!Boolean.TRUE.equals(tokenValidService.hasPermission(handler))) {
             ServletUtils.responseError(BaseExceptionEnum.NO_PERMISSION_EXCEPTION);
             return false;
         }
