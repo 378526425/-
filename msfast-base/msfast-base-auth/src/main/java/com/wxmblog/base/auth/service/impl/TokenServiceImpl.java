@@ -234,9 +234,7 @@ public class TokenServiceImpl implements TokenService {
             //登陆失败
             throw new JrsfException(BaseExceptionEnum.LOGIN_FAIL_EXCEPTION);
         }
-
         loginUserResponse.setInfo(loginUser.getInfo());
-
         loginUserResponse.setToken(createToken(loginUser));
 
         return loginUserResponse;

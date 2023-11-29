@@ -28,7 +28,7 @@ public class TokenValidServiceImpl implements TokenValidService {
             if (loginUser == null || loginUser.getUserType() == null) {
                 return false;
             }
-            GetMapping getMapping = ((HandlerMethod) handler).getMethod().getDeclaringClass().getAnnotation(GetMapping.class);
+            GetMapping getMapping = ((HandlerMethod) handler).getMethodAnnotation(GetMapping.class);
             if (getMapping == null && !BaseUserTypeEnum.SUPER_ADMIN.equals(loginUser.getUserType())) {
                 //游客只能访问get请求
                 return false;

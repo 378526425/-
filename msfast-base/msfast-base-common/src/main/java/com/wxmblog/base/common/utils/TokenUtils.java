@@ -3,6 +3,7 @@ package com.wxmblog.base.common.utils;
 import cn.hutool.core.map.MapUtil;
 import com.wxmblog.base.common.entity.LoginUser;
 import com.wxmblog.base.common.constant.SecurityConstants;
+import com.wxmblog.base.common.enums.BaseUserTypeEnum;
 import io.jsonwebtoken.Claims;
 
 import java.util.Map;
@@ -44,6 +45,11 @@ public class TokenUtils {
         }
         Map map = claims.get(SecurityConstants.LOGIN_USER, Map.class);
         LoginUser loginUser = new LoginUser();
+        Object userType = map.get("userType");
+        if (userType != null) {
+            BaseUserTypeEnum userTypeEnum = BaseUserTypeEnum.valueOf(userType.toString());
+            loginUser.setUserType(userTypeEnum);
+        }
         loginUser.setId((Integer) map.get("id"));
         T t = MapUtil.get(map, "info", cls);
         loginUser.setInfo(t);
