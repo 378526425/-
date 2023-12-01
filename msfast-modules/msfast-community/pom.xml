@@ -5,7 +5,7 @@
     <parent>
         <artifactId>msfast-modules</artifactId>
         <groupId>com.wxmblog</groupId>
-        <version>${msfast.base.common.version}</version>
+        <version>0.0.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
