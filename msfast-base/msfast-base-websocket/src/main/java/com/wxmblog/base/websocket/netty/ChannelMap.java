@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author liuhm
+ * @author wangxiaomu
  * @Description: 用户id和channel的关联关系处理
  */
 public class ChannelMap {

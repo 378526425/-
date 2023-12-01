@@ -25,4 +25,15 @@ public class SM4Util {
         String decryptStr = sm4.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
         return decryptStr;
     }
+
+    public static String encryptHex(String content,String key) {
+        SymmetricCrypto sm4 = new SymmetricCrypto(SymmetricAlgorithm.DESede, key.getBytes());
+        return sm4.encryptHex(content);
+    }
+
+    public static String decryptStr(String encryptHex,String key) {
+        SymmetricCrypto sm4 = new SymmetricCrypto(SymmetricAlgorithm.DESede, key.getBytes());
+        String decryptStr = sm4.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
+        return decryptStr;
+    }
 }

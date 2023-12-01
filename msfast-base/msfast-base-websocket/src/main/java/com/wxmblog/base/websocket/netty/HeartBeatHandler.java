@@ -9,7 +9,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 /**
  * @ClassName：HeartBeatHandler
  * @Description: 心跳检测
- * @Author: liuhm
+ * @Author: wangxiaomu
  * @Date: 2020/3/13 0013 上午 11:46
  */
 

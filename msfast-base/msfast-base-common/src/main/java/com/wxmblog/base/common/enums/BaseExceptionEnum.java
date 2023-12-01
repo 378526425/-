@@ -29,8 +29,8 @@ public enum BaseExceptionEnum implements BaseExceptionEnumInterface {
     SECRET_ISEMPTY(10021, "secret为空"),
     API_ERROR(10022, "调用其他api错误"),
     Foreign_Value_Not_Exist(10023, "外键数据不存在"),
-    PHONE_FORMAT_ERROR(10024, "手机号格式错误");
-
+    PHONE_FORMAT_ERROR(10024, "手机号格式错误"),
+    NO_AUTHORIZE_EXCEPTION(10025, "没有授权，请联系：MMRWXM 授权后访问");
 
     private Integer code;
     private String msg;

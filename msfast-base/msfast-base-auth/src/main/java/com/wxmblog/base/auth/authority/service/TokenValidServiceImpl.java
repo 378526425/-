@@ -1,6 +1,7 @@
 package com.wxmblog.base.auth.authority.service;
 
 import com.wxmblog.base.auth.common.annotation.AdminRequest;
+import com.wxmblog.base.auth.common.annotation.SuperAdminMethod;
 import com.wxmblog.base.common.entity.LoginUser;
 import com.wxmblog.base.common.enums.BaseUserTypeEnum;
 import com.wxmblog.base.common.utils.TokenUtils;
@@ -33,6 +34,16 @@ public class TokenValidServiceImpl implements TokenValidService {
                 //游客只能访问get请求
                 return false;
             }
+        }
+
+        //超级管理员才能访问的方法
+        SuperAdminMethod annotation = ((HandlerMethod) handler).getMethodAnnotation(SuperAdminMethod.class);
+        if (annotation != null) {
+            LoginUser loginUser = TokenUtils.info(Object.class);
+            if (loginUser == null || !BaseUserTypeEnum.SUPER_ADMIN.equals(loginUser.getUserType())) {
+                return false;
+            }
+
         }
 
         return true;

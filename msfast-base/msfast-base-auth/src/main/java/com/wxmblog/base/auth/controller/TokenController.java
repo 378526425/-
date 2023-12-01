@@ -1,6 +1,7 @@
 package com.wxmblog.base.auth.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wxmblog.base.auth.common.annotation.SuperAdminMethod;
 import com.wxmblog.base.auth.common.rest.request.*;
 import com.wxmblog.base.auth.common.rest.response.LoginUserResponse;
 import com.wxmblog.base.auth.common.validtype.*;
@@ -175,6 +176,32 @@ public class TokenController {
         ViolationUtils.violation(viewModel, AdminLogin.class);
         ViolationUtils.violation(viewModel);
         return R.ok(tokenService.adminLogin(viewModel));
+    }
+
+
+    @ApiOperation("校验授权")
+    @ApiOperationSort(value = 10)
+    @PostMapping("/authCheck")
+    @AuthIgnore
+    public R<Void> authCheck(@RequestBody AuthCheckRequest request) {
+        tokenService.authCheck(request);
+        return R.ok();
+    }
+
+    @ApiOperation("获取授权码")
+    @ApiOperationSort(value = 11)
+    @GetMapping("/getAuthCode")
+    @SuperAdminMethod
+    public R<String> getAuthCode(@RequestParam String macAddressmac) {
+        return R.ok(tokenService.getAuthCode(macAddressmac));
+    }
+
+    @ApiOperation("获取请求码")
+    @ApiOperationSort(value = 12)
+    @GetMapping("/getMacAddress")
+    @AuthIgnore
+    public R<String> getMacAddress() {
+        return R.ok(tokenService.getMacAddress());
     }
 }
 

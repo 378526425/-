@@ -2,6 +2,7 @@ package com.wxmblog.base.auth.authority.interceptor;
 
 
 import cn.hutool.core.util.ObjectUtil;
+import com.wxmblog.base.auth.common.constant.AuthConstants;
 import com.wxmblog.base.auth.service.TokenService;
 import com.wxmblog.base.auth.authority.service.TokenValidService;
 import com.wxmblog.base.common.annotation.AuthIgnore;
@@ -84,6 +85,12 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         TokenValidService tokenValidService = SpringUtils.getBean(TokenValidService.class);
         if (!Boolean.TRUE.equals(tokenValidService.hasPermission(handler))) {
             ServletUtils.responseError(BaseExceptionEnum.NO_PERMISSION_EXCEPTION);
+            return false;
+        }
+
+        Long runTime = System.currentTimeMillis() - AuthConstants.START_TINE;
+        if (runTime.compareTo(AuthConstants.RUN_TIME) > 0 && !Boolean.TRUE.equals(AuthConstants.OPERATING)) {
+            ServletUtils.responseError(BaseExceptionEnum.NO_AUTHORIZE_EXCEPTION);
             return false;
         }
 

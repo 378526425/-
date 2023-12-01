@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * @ClassName：WSServer
  * @Description: 初始化程序后加载此方法
- * @Author: liuhm
+ * @Author: wangxiaomu
  * @Date: 2020/3/10  上午 10:49
  */
 @Component

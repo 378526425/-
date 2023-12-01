@@ -1,5 +1,6 @@
 package com.wxmblog.base.auth.service.impl;
 
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.wxmblog.base.auth.authority.service.IAdminAuthorityService;
 import com.wxmblog.base.auth.authority.service.WxAppletService;
@@ -25,6 +26,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -238,6 +241,30 @@ public class TokenServiceImpl implements TokenService {
         loginUserResponse.setToken(createToken(loginUser));
 
         return loginUserResponse;
+    }
+
+    @Override
+    public void authCheck(AuthCheckRequest request) {
+        if (!SM4Util.encryptHex(request.getMacAddressmac().toLowerCase()).equals(request.getAuthorizationCode())) {
+            throw new JrsfException(BaseExceptionEnum.NO_AUTHORIZE_EXCEPTION);
+        }
+    }
+
+    @Override
+    public String getAuthCode(String macAddressmac) {
+        return SM4Util.encryptHex(macAddressmac.toLowerCase());
+    }
+
+    @Override
+    public String getMacAddress() {
+        InetAddress inetAddress = null;
+        try {
+            inetAddress = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        String localMacAddress = NetUtil.getMacAddress(inetAddress);
+        return localMacAddress.toLowerCase();
     }
 
 

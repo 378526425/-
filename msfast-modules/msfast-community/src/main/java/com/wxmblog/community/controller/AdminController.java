@@ -1,6 +1,7 @@
 package com.wxmblog.community.controller;
 
 import com.wxmblog.base.auth.common.annotation.AdminRequest;
+import com.wxmblog.base.auth.common.constant.AuthConstants;
 import com.wxmblog.base.common.web.domain.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,7 +9,7 @@ import io.swagger.annotations.ApiOperationSort;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @author fanxl
+ * @author wangxiaomu
  * @date 2023/11/28 17:48
  */
 @RestController

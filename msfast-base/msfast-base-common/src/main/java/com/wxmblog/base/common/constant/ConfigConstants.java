@@ -56,6 +56,9 @@ public class ConfigConstants {
     @Value("${wxmfast.config.auth.sm4-key:1A2B3C4D5E6F7G8H12345678}")
     private String sm4Key;
 
+    @Value("${wxmfast.config.auth.authorizationCode:''}")
+    private String authorizationCode;
+
     @Value("${wxmfast.config.file.max-size:50}")
     private Long fileMaxSize;
 
@@ -393,4 +396,9 @@ public class ConfigConstants {
     public static Boolean ENABLE_SWAGGER() {
         return SpringUtils.getBean(ConfigConstants.class).getEnableSwagger();
     }
+
+    public static String AUTHORIZATION_CODE() {
+        return SpringUtils.getBean(ConfigConstants.class).getAuthorizationCode();
+    }
+
 }

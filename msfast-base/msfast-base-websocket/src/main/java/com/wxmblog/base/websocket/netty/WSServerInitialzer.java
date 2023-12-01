@@ -13,7 +13,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 /**
  * @ClassName：WSServerInitialzer
  * @Description: 处理
- * @Author: liuhm
+ * @Author: wangxiaomu
  * @Date: 2020/3/9 0009 上午 10:49
  */
 public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {

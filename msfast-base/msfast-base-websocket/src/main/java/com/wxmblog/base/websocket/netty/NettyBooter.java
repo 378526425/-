@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * @ClassName：NettyBooter
  * @Description: 初始化程序后加载此方法
- * @Author: liuhm
+ * @Author: wangxiaomu
  * @Date: 2020/3/9 0009 上午 10:49
  */
 @Component
