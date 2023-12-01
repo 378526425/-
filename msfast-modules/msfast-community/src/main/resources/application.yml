@@ -154,6 +154,8 @@ alisms:
 
 wxmfast:
   config:
+    auth:
+      authorizationCode: ed7cdfab9cb1a8f8b9760588595d7f974ee8640fdcb25
     websocket:
       heartbeat-time: 3000
       only-one: false
