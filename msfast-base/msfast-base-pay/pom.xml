@@ -5,13 +5,14 @@
     <parent>
         <artifactId>msfast-base</artifactId>
         <groupId>com.wxmblog</groupId>
-        <version>0.0.3</version>
+        <version>${msfast.base.common.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>msfast-base-pay</artifactId>
 
     <properties>
+        <wxpay-sdk.version>0.0.3</wxpay-sdk.version>
     </properties>
 
     <dependencies>
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.github.wxpay</groupId>
             <artifactId>wxpay-sdk</artifactId>
-            <version>0.0.3</version>
+            <version>${wxpay-sdk.version}</version>
         </dependency>
     </dependencies>
 </project>
