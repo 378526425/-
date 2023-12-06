@@ -28,7 +28,7 @@ public interface TokenService<T extends LoginRequest, R extends RegisterRequest>
 
     void authCheck(AuthCheckRequest request);
 
-    String getAuthCode(String macAddressmac);
+    String getAuthCode(String authorizationKey);
 
-    String getMacAddress();
+    String getAuthKey();
 }

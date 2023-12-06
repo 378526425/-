@@ -12,9 +12,9 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class AuthCheckRequest {
 
-    @ApiModelProperty("mac地址")
+    @ApiModelProperty("请求码")
     @NotBlank
-    private String macAddressmac;
+    private String authorizationKey;
 
     @ApiModelProperty("授权码")
     @NotBlank

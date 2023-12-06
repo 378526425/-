@@ -245,26 +245,25 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public void authCheck(AuthCheckRequest request) {
-        if (!SM4Util.encryptHex(request.getMacAddressmac().toLowerCase()).equals(request.getAuthorizationCode())) {
+        if (!SM4Util.encryptHex(request.getAuthorizationKey().toLowerCase()).equals(request.getAuthorizationCode())) {
             throw new JrsfException(BaseExceptionEnum.NO_AUTHORIZE_EXCEPTION);
         }
     }
 
     @Override
-    public String getAuthCode(String macAddressmac) {
-        return SM4Util.encryptHex(macAddressmac.toLowerCase());
+    public String getAuthCode(String authorizationKey) {
+        return SM4Util.encryptHex(authorizationKey.toLowerCase());
     }
 
     @Override
-    public String getMacAddress() {
-        InetAddress inetAddress = null;
+    public String getAuthKey() {
+        String authKey = null;
         try {
-            inetAddress = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
+            authKey = CPUUtils.getCpuId();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        String localMacAddress = NetUtil.getMacAddress(inetAddress);
-        return localMacAddress.toLowerCase();
+        return authKey.toLowerCase();
     }
 
 

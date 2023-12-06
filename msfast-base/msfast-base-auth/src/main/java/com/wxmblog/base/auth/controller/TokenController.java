@@ -178,30 +178,29 @@ public class TokenController {
         return R.ok(tokenService.adminLogin(viewModel));
     }
 
-
-    @ApiOperation("校验授权")
+    @ApiOperation("获取请求码")
     @ApiOperationSort(value = 10)
-    @PostMapping("/authCheck")
+    @GetMapping("/getAuthKey")
     @AuthIgnore
-    public R<Void> authCheck(@RequestBody AuthCheckRequest request) {
-        tokenService.authCheck(request);
-        return R.ok();
+    public R<String> getAuthKey() {
+        return R.ok(tokenService.getAuthKey());
     }
 
     @ApiOperation("获取授权码")
     @ApiOperationSort(value = 11)
     @GetMapping("/getAuthCode")
     @SuperAdminMethod
-    public R<String> getAuthCode(@RequestParam String macAddressmac) {
-        return R.ok(tokenService.getAuthCode(macAddressmac));
+    public R<String> getAuthCode(@RequestParam String authorizationKey) {
+        return R.ok(tokenService.getAuthCode(authorizationKey));
     }
 
-    @ApiOperation("获取请求码")
+    @ApiOperation("校验授权")
     @ApiOperationSort(value = 12)
-    @GetMapping("/getMacAddress")
+    @PostMapping("/authCheck")
     @AuthIgnore
-    public R<String> getMacAddress() {
-        return R.ok(tokenService.getMacAddress());
+    public R<Void> authCheck(@RequestBody AuthCheckRequest request) {
+        tokenService.authCheck(request);
+        return R.ok();
     }
 }
 
