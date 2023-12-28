@@ -6,7 +6,7 @@
     <groupId>com.wxmblog</groupId>
     <artifactId>msfast-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <name>msfast</name>
     <description>聚合服务</description>
 
@@ -21,7 +21,7 @@
         <spring.cloud.version>2021.0.1</spring.cloud.version>
         <spring.cloud.alibaba.version>2021.0.1.0</spring.cloud.alibaba.version>
         <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
-        <msfast.base.common.version>0.0.6</msfast.base.common.version>
+        <msfast.base.common.version>0.0.7</msfast.base.common.version>
         <springboot.maven.plugin.version>2.7.6</springboot.maven.plugin.version>
         <maven.test.skip>true</maven.test.skip>
         <java.version>1.8</java.version>
