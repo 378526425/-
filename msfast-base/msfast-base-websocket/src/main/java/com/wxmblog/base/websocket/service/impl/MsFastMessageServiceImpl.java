@@ -139,17 +139,12 @@ public class MsFastMessageServiceImpl implements MsFastMessageService {
         messageList.setMessageDescribeFormat(messageInfo.getMessageFormat());
         messageList.setUnreadCount(redisService.getCacheObject(userId + WebSocketConstants.MSG_UN_READ + sendUserId));
 
-        BaseUserInfo baseUserInfo = redisService.getCacheObject(Constants.BASE_USER_INFO + sendUserId);
-        if (baseUserInfo != null && baseUserInfo.getExtra() != null) {
-            messageList.setHeadPortrait(baseUserInfo.getExtra().get(WebSocketConstants.HEAD_PORTRAIT) != null ? baseUserInfo.getExtra().get(WebSocketConstants.HEAD_PORTRAIT).toString() : "");
-            messageList.setNickName(baseUserInfo.getExtra().get(WebSocketConstants.NICK_NAME) != null ? baseUserInfo.getExtra().get(WebSocketConstants.NICK_NAME).toString() : "");
-        } else {
-            IImService iImService = SpringBeanUtils.getBean(IImService.class);
-            if (iImService != null) {
-                ImUserInfoResponse imUserInfo = iImService.getImUser(sendUserId);
-                messageList.setHeadPortrait(imUserInfo.getHeadPortrait());
-                messageList.setNickName(imUserInfo.getNickName());
-            }
+        //BaseUserInfo baseUserInfo = redisService.getCacheObject(Constants.BASE_USER_INFO + sendUserId);
+        IImService iImService = SpringBeanUtils.getBean(IImService.class);
+        if (iImService != null) {
+            ImUserInfoResponse imUserInfo = iImService.getImUser(sendUserId);
+            messageList.setHeadPortrait(imUserInfo.getHeadPortrait());
+            messageList.setNickName(imUserInfo.getNickName());
         }
 
         //添加消息前删除之前的列表数据

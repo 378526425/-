@@ -311,6 +311,9 @@ public class TokenServiceImpl implements TokenService {
             wxAppletOpenResponse = wxAppletService.getOpenIdInfoByCode(request.getCode());
         } else {
             wxAppletOpenResponse.setOpenId(MsfCommonTool.getIpAddress());
+            if ("127.0.0.1".equals(wxAppletOpenResponse.getOpenId())) {
+                wxAppletOpenResponse.setOpenId(getAuthKey());
+            }
         }
 
 
