@@ -216,9 +216,11 @@ public class TokenServiceImpl implements TokenService {
     public LoginUserResponse wxAppletLogin(LoginRequest request) {
 
         WxAppletOpenResponse wxAppletOpenResponse = new WxAppletOpenResponse();
-        if (!"ip".equalsIgnoreCase(request.getCode())) {
+        if (StringUtils.isNotBlank(request.getCode()) && request.getCode().contains("touristopenid")) {
+            wxAppletOpenResponse.setOpenId(request.getCode());
+        }else if (!"ip".equalsIgnoreCase(request.getCode())) {
             wxAppletOpenResponse = wxAppletService.getOpenIdInfoByCode(request.getCode());
-        } else {
+        }  else {
             wxAppletOpenResponse.setOpenId(MsfCommonTool.getIpAddress());
             if ("127.0.0.1".equals(wxAppletOpenResponse.getOpenId())) {
                 wxAppletOpenResponse.setOpenId(getAuthKey());
@@ -307,9 +309,12 @@ public class TokenServiceImpl implements TokenService {
     private void setWxAppletParam(RegisterRequest request) {
 
         WxAppletOpenResponse wxAppletOpenResponse = new WxAppletOpenResponse();
-        if (!"ip".equalsIgnoreCase(request.getCode())) {
+
+        if (StringUtils.isNotBlank(request.getCode()) && request.getCode().contains("touristopenid")) {
+            wxAppletOpenResponse.setOpenId(request.getCode());
+        }else if (!"ip".equalsIgnoreCase(request.getCode())) {
             wxAppletOpenResponse = wxAppletService.getOpenIdInfoByCode(request.getCode());
-        } else {
+        }  else {
             wxAppletOpenResponse.setOpenId(MsfCommonTool.getIpAddress());
             if ("127.0.0.1".equals(wxAppletOpenResponse.getOpenId())) {
                 wxAppletOpenResponse.setOpenId(getAuthKey());
