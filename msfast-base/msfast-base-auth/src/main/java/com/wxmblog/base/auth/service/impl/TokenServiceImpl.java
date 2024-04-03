@@ -121,15 +121,15 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void logout() {
 
-        if (ConfigConstants.AUTH_REDIS_ENABLE()) {
-            String token = SecurityUtils.getToken();
-            if (StringUtils.isNotBlank(token)) {
-                redisService.deleteObject(JwtUtils.getUserRedisToken(token));
-                if (!ConfigConstants.AUTH_MANY_ONLINE()) {
-                    redisService.deleteObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token));
-                }
+
+        String token = SecurityUtils.getToken();
+        if (StringUtils.isNotBlank(token)) {
+            redisService.deleteObject(JwtUtils.getUserRedisToken(token));
+            if (!ConfigConstants.AUTH_MANY_ONLINE()) {
+                redisService.deleteObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token));
             }
         }
+
 
         //用户退出登陆
         IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
@@ -141,13 +141,11 @@ public class TokenServiceImpl implements TokenService {
 
         String redisToken = JwtUtils.getUserRedisToken(token);
 
-        if (ConfigConstants.AUTH_REDIS_ENABLE()) {
-            Long expire = redisService.getExpire(redisToken, TimeUnit.MINUTES);
-            if (expire.compareTo(0l) > 0 && expire.compareTo(ConfigConstants.REFRESH()) <= 0) {
-                redisService.setCacheObject(JwtUtils.getUserRedisToken(token), JwtUtils.getUserId(token), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
-                if (Boolean.FALSE.equals(ConfigConstants.AUTH_MANY_ONLINE())) {
-                    redisService.setCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token), JwtUtils.getUserRedisToken(token), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
-                }
+        Long expire = redisService.getExpire(redisToken, TimeUnit.MINUTES);
+        if (expire.compareTo(0l) > 0 && expire.compareTo(ConfigConstants.REFRESH()) <= 0) {
+            redisService.setCacheObject(JwtUtils.getUserRedisToken(token), JwtUtils.getUserId(token), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
+            if (Boolean.FALSE.equals(ConfigConstants.AUTH_MANY_ONLINE())) {
+                redisService.setCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token), JwtUtils.getUserRedisToken(token), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
             }
         }
 
@@ -218,9 +216,9 @@ public class TokenServiceImpl implements TokenService {
         WxAppletOpenResponse wxAppletOpenResponse = new WxAppletOpenResponse();
         if (StringUtils.isNotBlank(request.getCode()) && request.getCode().contains("touristopenid")) {
             wxAppletOpenResponse.setOpenId(request.getCode());
-        }else if (!"ip".equalsIgnoreCase(request.getCode())) {
+        } else if (!"ip".equalsIgnoreCase(request.getCode())) {
             wxAppletOpenResponse = wxAppletService.getOpenIdInfoByCode(request.getCode());
-        }  else {
+        } else {
             wxAppletOpenResponse.setOpenId(MsfCommonTool.getIpAddress());
             if ("127.0.0.1".equals(wxAppletOpenResponse.getOpenId())) {
                 wxAppletOpenResponse.setOpenId(getAuthKey());
@@ -279,13 +277,11 @@ public class TokenServiceImpl implements TokenService {
         claimsMap.put(SecurityConstants.LOGIN_USER, loginUser);
         claimsMap.put(SecurityConstants.DETAILS_USER_ID, loginUser.getId());
 
-        if (ConfigConstants.AUTH_REDIS_ENABLE()) {
-            String redisToken = IdUtils.fastSimpleUUID();
-            claimsMap.put(SecurityConstants.REDIS_TOKEN, redisToken);
-            redisService.setCacheObject(redisToken, loginUser.getId(), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
-            if (Boolean.FALSE.equals(ConfigConstants.AUTH_MANY_ONLINE())) {
-                redisService.setCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + loginUser.getId(), redisToken, ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
-            }
+        String redisToken = IdUtils.fastSimpleUUID();
+        claimsMap.put(SecurityConstants.REDIS_TOKEN, redisToken);
+        redisService.setCacheObject(redisToken, loginUser.getId(), ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
+        if (Boolean.FALSE.equals(ConfigConstants.AUTH_MANY_ONLINE())) {
+            redisService.setCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + loginUser.getId(), redisToken, ConfigConstants.EXPIRATION(), TimeUnit.MINUTES);
         }
         return JwtUtils.createToken(claimsMap);
     }
@@ -312,9 +308,9 @@ public class TokenServiceImpl implements TokenService {
 
         if (StringUtils.isNotBlank(request.getCode()) && request.getCode().contains("touristopenid")) {
             wxAppletOpenResponse.setOpenId(request.getCode());
-        }else if (!"ip".equalsIgnoreCase(request.getCode())) {
+        } else if (!"ip".equalsIgnoreCase(request.getCode())) {
             wxAppletOpenResponse = wxAppletService.getOpenIdInfoByCode(request.getCode());
-        }  else {
+        } else {
             wxAppletOpenResponse.setOpenId(MsfCommonTool.getIpAddress());
             if ("127.0.0.1".equals(wxAppletOpenResponse.getOpenId())) {
                 wxAppletOpenResponse.setOpenId(getAuthKey());

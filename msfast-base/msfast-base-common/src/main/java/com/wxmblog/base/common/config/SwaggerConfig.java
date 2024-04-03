@@ -17,13 +17,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import static com.google.common.collect.Lists.newArrayList;
-
 /**
- * @program: wxm-fast
- * @description:
- * @author: Mr.Wang
- * @create: 2022-07-19 16:21
- **/
+ * @Author: rh
+ * @Date: 2024/3/27 16:41
+ * @Description: swagger 配置
+ */
 @Configuration
 @EnableSwagger2
 @EnableSwaggerBootstrapUI

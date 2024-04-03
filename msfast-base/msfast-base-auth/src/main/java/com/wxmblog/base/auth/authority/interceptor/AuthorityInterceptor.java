@@ -61,22 +61,21 @@ public class AuthorityInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if (ConfigConstants.AUTH_REDIS_ENABLE()) {
-            Long expire = redisService.getExpire(JwtUtils.getUserRedisToken(token));
-            if (expire.compareTo(0l) <= 0) {
-                ServletUtils.responseError(BaseExceptionEnum.TOKEN_EXPIRED_EXCEPTION);
+        Long expire = redisService.getExpire(JwtUtils.getUserRedisToken(token));
+        if (expire.compareTo(0l) <= 0) {
+            ServletUtils.responseError(BaseExceptionEnum.TOKEN_EXPIRED_EXCEPTION);
+            return false;
+        }
+
+        //不能同时在线
+        if (!ConfigConstants.AUTH_MANY_ONLINE()) {
+            String onlineToken = redisService.getCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token));
+            if (StringUtils.isBlank(onlineToken) || (StringUtils.isNotBlank(onlineToken) && !onlineToken.equals(JwtUtils.getOnlineUSerToken(token)))) {
+                ServletUtils.responseError(BaseExceptionEnum.OTHER_LOGIN_EXCEPTION);
                 return false;
             }
-
-            //不能同时在线
-            if (!ConfigConstants.AUTH_MANY_ONLINE()) {
-                String onlineToken = redisService.getCacheObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token));
-                if (StringUtils.isBlank(onlineToken) || (StringUtils.isNotBlank(onlineToken) && !onlineToken.equals(JwtUtils.getOnlineUSerToken(token)))) {
-                    ServletUtils.responseError(BaseExceptionEnum.OTHER_LOGIN_EXCEPTION);
-                    return false;
-                }
-            }
         }
+
 
         TokenService tokenService = SpringUtils.getBean(TokenService.class);
         tokenService.refreshToken(token);

@@ -138,6 +138,6 @@ public class JwtUtils {
      */
     public static String getOnlineUSerToken(String token) {
         Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.MANY_ONLINE_USER_TOKEN);
+        return getValue(claims, SecurityConstants.REDIS_TOKEN);
     }
 }

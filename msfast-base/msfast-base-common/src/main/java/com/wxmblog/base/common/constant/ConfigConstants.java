@@ -20,9 +20,6 @@ import org.springframework.stereotype.Component;
 @RefreshScope
 public class ConfigConstants {
 
-    @Value("${wxmfast.config.auth.redis-enable:false}")
-    private Boolean redisEnable;
-
     @Value("${wxmfast.config.auth.many-online:false}")
     private Boolean manyOnline;
 
@@ -119,14 +116,6 @@ public class ConfigConstants {
 
     @Value("${wxmfast.config.common.enable-swagger:false}")
     private Boolean enableSwagger;
-
-
-    /**
-     * @Description: 是否启用redis 默认false
-     */
-    public static Boolean AUTH_REDIS_ENABLE() {
-        return SpringUtils.getBean(ConfigConstants.class).getRedisEnable();
-    }
 
     /**
      * @Description: 是否支持多人在线 默认false
