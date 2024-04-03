@@ -80,7 +80,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public R handleOptimisticLockerException(HttpMessageNotReadableException e) {
+    public R handleConversionException(HttpMessageNotReadableException e) {
         log.error("请求内容字段格式转换错误：{}", e.getMessage());
         return R.fail(BaseExceptionEnum.CONVERSION_EXCEPTION.getCode(), BaseExceptionEnum.CONVERSION_EXCEPTION.getMessage());
     }
