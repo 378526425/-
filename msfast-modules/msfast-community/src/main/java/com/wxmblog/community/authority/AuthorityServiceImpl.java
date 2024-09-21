@@ -8,6 +8,7 @@ import com.wxmblog.base.common.enums.FrUserStatusEnum;
 import com.wxmblog.base.common.enums.BaseUserExceptionEnum;
 import com.wxmblog.base.common.exception.JrsfException;
 import com.wxmblog.base.common.utils.DateUtils;
+import com.wxmblog.base.common.utils.SpringUtils;
 import com.wxmblog.base.file.service.MsfFileService;
 import com.wxmblog.community.common.rest.response.user.LoginResponse;
 import com.wxmblog.community.common.rest.request.user.UserLoginRequest;
@@ -28,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthorityServiceImpl extends IAuthorityServiceImpl<UserLoginRequest, UserRegisterRequest> {
 
-    @Autowired
-    FrUserService frUserService;
 
     @Autowired
     MsfFileService fileService;
@@ -46,8 +45,8 @@ public class AuthorityServiceImpl extends IAuthorityServiceImpl<UserLoginRequest
         if (age > 100) {
             throw new JrsfException(BaseUserExceptionEnum.AGE_NOT_RANGE_EXCEPTION).setMsg("超过100周岁无法注册");
         }
-
-        if (this.frUserService.countByPhone(registerRequest.getPhone()) > 0l) {
+        FrUserService frUserService= SpringUtils.getBean(FrUserService.class);
+        if (frUserService.countByPhone(registerRequest.getPhone()) > 0l) {
             throw new JrsfException(BaseUserExceptionEnum.USER_EXIST_EXCEPTION);
         }
 
@@ -57,7 +56,7 @@ public class AuthorityServiceImpl extends IAuthorityServiceImpl<UserLoginRequest
 
 
         frUserEntity.setStatus(FrUserStatusEnum.ENABLE);
-        this.frUserService.save(frUserEntity);
+        frUserService.save(frUserEntity);
 
         //保存头像
         fileService.changeTempFile(registerRequest.getHeadPortrait());
@@ -65,8 +64,8 @@ public class AuthorityServiceImpl extends IAuthorityServiceImpl<UserLoginRequest
 
     @Override
     public void sendSmsBefore(SendSmsRequest sendSmsRequest) {
-
-        Long count = this.frUserService.countByPhone(sendSmsRequest.getPhone());
+        FrUserService frUserService= SpringUtils.getBean(FrUserService.class);
+        Long count = frUserService.countByPhone(sendSmsRequest.getPhone());
         if (MessageType.REGISTER.equals(sendSmsRequest.getMessageType())) {
             //注册
             if (count > 0l) {
@@ -87,7 +86,8 @@ public class AuthorityServiceImpl extends IAuthorityServiceImpl<UserLoginRequest
     public LoginUser login(UserLoginRequest loginRequest) {
 
         LoginUser loginUser = new LoginUser();
-        FrUserEntity frUserEntity = this.frUserService.getFrUserByPhone(loginRequest.getUsername());
+        FrUserService frUserService= SpringUtils.getBean(FrUserService.class);
+        FrUserEntity frUserEntity = frUserService.getFrUserByPhone(loginRequest.getUsername());
         if (frUserEntity == null) {
             throw new JrsfException(BaseUserExceptionEnum.USER_NOT_EXIST_EXCEPTION);
         }

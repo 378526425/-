@@ -12,7 +12,7 @@
 
     <modules>
         <module>msfast-base</module>
-       <!-- <module>msfast-community</module>-->
+        <module>msfast-modules</module>
     </modules>
 
     <properties>
