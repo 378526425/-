@@ -1,7 +1,9 @@
 package com.wxmblog.base.auth.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wxmblog.base.auth.authority.service.IAdminAuthorityService;
 import com.wxmblog.base.auth.common.annotation.SuperAdminMethod;
+import com.wxmblog.base.auth.common.enums.LoginType;
 import com.wxmblog.base.auth.common.rest.request.*;
 import com.wxmblog.base.auth.common.rest.response.LoginUserResponse;
 import com.wxmblog.base.auth.common.validtype.*;
@@ -10,6 +12,7 @@ import com.wxmblog.base.auth.utils.ReflexUtils;
 import com.wxmblog.base.auth.authority.service.IAuthorityService;
 import com.wxmblog.base.common.annotation.AuthIgnore;
 import com.wxmblog.base.common.constant.ParamTypeConstants;
+import com.wxmblog.base.common.entity.LoginUser;
 import com.wxmblog.base.common.utils.SpringUtils;
 import com.wxmblog.base.common.utils.ViolationUtils;
 import com.wxmblog.base.common.web.domain.R;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @program: msfast-parent
@@ -34,6 +38,9 @@ public class TokenController {
     @Autowired
     TokenService tokenService;
 
+    @Autowired
+    List<IAuthorityService> iAuthorityService;
+
     @AuthIgnore
     @PostMapping("/register")
     @ApiOperation(value = "手机号注册")
@@ -43,17 +50,21 @@ public class TokenController {
     })
     public R<Void> register(@RequestBody @ApiIgnore String viewmodelJson) {
 
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (LoginType.Number_Password.equals(iAuthorityService.getLoginType())) {
 
-        Class<? extends RegisterRequest> clsViewModel = ReflexUtils.getServiceView(IAuthorityService);
+                Class<? extends RegisterRequest> clsViewModel = ReflexUtils.getServiceView(iAuthorityService);
+                RegisterRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+                //数据校验
+                ViolationUtils.violation(viewModel, PhoneRegister.class);
+                ViolationUtils.violation(viewModel);
+                viewModel.setLoginType(LoginType.Number_Password);
+                tokenService.register(viewModel);
+                return R.ok();
+            }
 
-        RegisterRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
-
-        //数据校验
-        ViolationUtils.violation(viewModel, PhoneRegister.class);
-        ViolationUtils.violation(viewModel);
-        tokenService.register(viewModel);
-        return R.ok();
+        }
+        return R.fail("没有实现注册方法");
     }
 
     @AuthIgnore
@@ -65,16 +76,22 @@ public class TokenController {
     })
     public R<LoginUserResponse> login(@RequestBody @ApiIgnore String viewmodelJson) {
 
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (LoginType.Number_Password.equals(iAuthorityService.getLoginType())) {
+                Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(iAuthorityService);
 
-        Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(IAuthorityService);
+                LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
 
-        LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+                //数据校验
+                ViolationUtils.violation(viewModel, PhoneLogin.class);
+                ViolationUtils.violation(viewModel);
+                viewModel.setLoginType(LoginType.Number_Password);
+                return R.ok(tokenService.login(viewModel));
+            }
 
-        //数据校验
-        ViolationUtils.violation(viewModel, PhoneLogin.class);
-        ViolationUtils.violation(viewModel);
-        return R.ok(tokenService.login(viewModel));
+        }
+
+        return R.fail("没有实现登陆方法");
     }
 
     @AuthIgnore
@@ -122,18 +139,20 @@ public class TokenController {
     })
     public R<Void> wxAppletRegister(@RequestBody @ApiIgnore String viewmodelJson) {
 
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (LoginType.WX_Applet.equals(iAuthorityService.getLoginType())) {
 
-        Class<? extends RegisterRequest> clsViewModel = ReflexUtils.getServiceView(IAuthorityService);
-
-        RegisterRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
-
-        //数据校验
-        ViolationUtils.violation(viewModel, WxAppletRegister.class);
-        ViolationUtils.violation(viewModel);
-
-        tokenService.wxAppletRegister(viewModel);
-        return R.ok();
+                Class<? extends RegisterRequest> clsViewModel = ReflexUtils.getServiceView(iAuthorityService);
+                RegisterRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+                //数据校验
+                ViolationUtils.violation(viewModel, WxAppletRegister.class);
+                ViolationUtils.violation(viewModel);
+                viewModel.setLoginType(LoginType.WX_Applet);
+                tokenService.wxAppletRegister(viewModel);
+                return R.ok();
+            }
+        }
+        return R.fail("没有实现注册方法");
     }
 
     @AuthIgnore
@@ -145,16 +164,21 @@ public class TokenController {
     })
     public R<LoginUserResponse> wxAppletLogin(@RequestBody @ApiIgnore String viewmodelJson) {
 
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (LoginType.WX_Applet.equals(iAuthorityService.getLoginType())) {
 
-        Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(IAuthorityService);
+                Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(iAuthorityService);
+                LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
 
-        LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+                //数据校验
+                ViolationUtils.violation(viewModel, WxAppletLogin.class);
+                ViolationUtils.violation(viewModel);
+                viewModel.setLoginType(LoginType.WX_Applet);
+                return R.ok(tokenService.wxAppletLogin(viewModel));
+            }
+        }
 
-        //数据校验
-        ViolationUtils.violation(viewModel, WxAppletLogin.class);
-        ViolationUtils.violation(viewModel);
-        return R.ok(tokenService.wxAppletLogin(viewModel));
+        return R.fail("没有实现登陆方法");
     }
 
     @AuthIgnore
@@ -166,16 +190,23 @@ public class TokenController {
     })
     public R<LoginUserResponse> adminLogin(@RequestBody @ApiIgnore String viewmodelJson) {
 
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
 
-        Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(IAuthorityService);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (LoginType.ADMIN.equals(iAuthorityService.getLoginType())) {
 
-        LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+                Class<? extends LoginRequest> clsViewModel = ReflexUtils.getServiceViewModel(iAuthorityService);
 
-        //数据校验
-        ViolationUtils.violation(viewModel, AdminLogin.class);
-        ViolationUtils.violation(viewModel);
-        return R.ok(tokenService.adminLogin(viewModel));
+                LoginRequest viewModel = JSONObject.parseObject(viewmodelJson, clsViewModel);
+
+                //数据校验
+                ViolationUtils.violation(viewModel, AdminLogin.class);
+                ViolationUtils.violation(viewModel);
+                viewModel.setLoginType(LoginType.ADMIN);
+                return R.ok(tokenService.adminLogin(viewModel));
+            }
+        }
+
+        return R.fail("没有实现登陆方法");
     }
 
     @ApiOperation("获取请求码")

@@ -138,7 +138,7 @@ minio:
   #url: ${MINIO_URL}
 
 alisms:
-  accessKeyId: LTAI4FSHDYpJ9vQZGGebn3mE 仅示例
+  accessKeyId: LTAI4FzmUipJ9vQZGGebn3mE
   secret: AqA59q88D5fyAHSYEi226BVl5ZmlOG 仅示例
   signName: 刷脸星球 仅示例
   loginTemplateCode: SMS_193245937

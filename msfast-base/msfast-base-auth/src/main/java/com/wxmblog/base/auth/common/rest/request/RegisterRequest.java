@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
  * @author ruoyi
  */
 @Data
-public class RegisterRequest {
+public class RegisterRequest extends BaseLoginRequest{
 
     @NotBlank(groups = {PhoneRegister.class})
     @Pattern(regexp = "^[0-9]{11}$", message = "手机号格式不正确", groups = {PhoneRegister.class})

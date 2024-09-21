@@ -1,74 +1,80 @@
 package com.wxmblog.base.common.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Scanner;
 
 public class CPUUtils {
     /**
      * 获取当前系统CPU序列，可区分linux系统和windows系统
      */
-    public static String getCpuId() throws Exception {
-        String cpuId;
-        // 获取当前操作系统名称
-        String os = System.getProperty("os.name");
-        os = os.toUpperCase();
-
-        // linux系统用Runtime.getRuntime().exec()执行 dmidecode -t processor 查询cpu序列
-        // windows系统用 wmic cpu get ProcessorId 查看cpu序列
-        if ("LINUX".equals(os)) {
-            cpuId = getLinuxCpuId("dmidecode -t processor | grep 'ID'", "ID", ":");
-        } else {
-            cpuId = getWindowsCpuId();
+    public static String getCpuId(){
+        String osName = System.getProperty("os.name").toLowerCase();
+        String cpuId="wxmblog.com";
+        if (osName.contains("windows")) {
+            cpuId=getCpuIdWindows();
+        } else if (osName.contains("linux")) {
+            cpuId=getCpuIdLinux();
+        } else if (osName.contains("mac") || osName.contains("darwin")) {
+            cpuId=getCpuIdMac();
         }
-        return cpuId.toUpperCase().replace(" ", "");
+        return cpuId;
     }
 
-    /**
-     * 获取linux系统CPU序列
-     */
-    public static String getLinuxCpuId(String cmd, String record, String symbol) throws Exception {
-        String execResult = executeLinuxCmd(cmd);
-        String[] infos = execResult.split("\n");
-        for (String info : infos) {
-            info = info.trim();
-            if (info.indexOf(record) != -1) {
-                info.replace(" ", "");
-                String[] sn = info.split(symbol);
-                return sn[1];
+    private static String getCpuIdWindows() {
+        try {
+            String cmd = "wmic cpu get ProcessorId";
+            Process process = Runtime.getRuntime().exec(cmd);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty() && !line.startsWith("ProcessorId")) {
+                    return line.trim();
+                }
             }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    public static String executeLinuxCmd(String cmd) throws Exception {
-        Runtime run = Runtime.getRuntime();
-        Process process;
-        process = run.exec(cmd);
-        InputStream in = process.getInputStream();
-        BufferedReader bs = new BufferedReader(new InputStreamReader(in));
-        StringBuffer out = new StringBuffer();
-        byte[] b = new byte[8192];
-        for (int n; (n = in.read(b)) != -1; ) {
-            out.append(new String(b, 0, n));
+    private static String getCpuIdLinux() {
+        try {
+            File file = new File("/proc/cpuinfo");
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("processor")) {
+                    return line.split(":")[1].trim();
+                }
+            }
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        in.close();
-        process.destroy();
-        return out.toString();
+        return null;
     }
 
-    /**
-     * 获取windows系统CPU序列
-     */
-    public static String getWindowsCpuId() throws Exception {
-        Process process = Runtime.getRuntime().exec(
-                new String[]{"wmic", "cpu", "get", "ProcessorId"});
-        process.getOutputStream().close();
-        Scanner sc = new Scanner(process.getInputStream());
-        sc.next();
-        String serial = sc.next();
-        return serial;
+    private static String getCpuIdMac() {
+        try {
+            String cmd = "sysctl -a";
+            Process process = Runtime.getRuntime().exec(cmd);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            boolean foundCpuInfo = false;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("machdep.cpu")) {
+                    return line.split(":")[1].trim();
+                }
+            }
+            reader.close();
+            if (!foundCpuInfo) {
+               return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +55,9 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     WxAppletService wxAppletService;
 
+    @Autowired
+    List<IAuthorityService> iAuthorityService;
+
     @Override
     public void register(RegisterRequest request) {
 
@@ -68,8 +72,11 @@ public class TokenServiceImpl implements TokenService {
             throw new JrsfException(BaseExceptionEnum.PWD_NOT_SAME_EXCEPTION);
         }
         //用户注册
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        IAuthorityService.register(request);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (request.getLoginType().equals(iAuthorityService.getLoginType())) {
+                iAuthorityService.register(request);
+            }
+        }
     }
 
     @Override
@@ -77,9 +84,13 @@ public class TokenServiceImpl implements TokenService {
 
         LoginUserResponse loginUserResponse = new LoginUserResponse();
 
-        //用户登陆业务校验
-        IAuthorityService iAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        LoginUser loginUser = iAuthorityService.login(request);
+        LoginUser loginUser = null;
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (request.getLoginType().equals(iAuthorityService.getLoginType())) {
+                loginUser = iAuthorityService.login(request);
+            }
+        }
+
         if (ObjectUtil.isNull(loginUser) || ObjectUtil.isNull(loginUser.getId())) {
             //登陆失败
             throw new JrsfException(BaseExceptionEnum.LOGIN_FAIL_EXCEPTION);
@@ -102,26 +113,25 @@ public class TokenServiceImpl implements TokenService {
         BeanUtils.copyProperties(request, checkSmsRequest);
         checkSms(checkSmsRequest);
 
+        LoginUser loginUser = null;
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (request.getLoginType().equals(iAuthorityService.getLoginType())) {
+                loginUser = iAuthorityService.smsLogin(request);
+            }
+        }
         //用户登陆业务校验
-        IAuthorityService iAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        LoginUser loginUser = iAuthorityService.smsLogin(request);
         if (ObjectUtil.isNull(loginUser) || ObjectUtil.isNull(loginUser.getId())) {
             //登陆失败
             throw new JrsfException(BaseExceptionEnum.LOGIN_FAIL_EXCEPTION);
         }
 
         loginUserResponse.setInfo(loginUser.getInfo());
-
         loginUserResponse.setToken(createToken(loginUser));
-
         return loginUserResponse;
     }
 
-
     @Override
     public void logout() {
-
-
         String token = SecurityUtils.getToken();
         if (StringUtils.isNotBlank(token)) {
             redisService.deleteObject(JwtUtils.getUserRedisToken(token));
@@ -129,11 +139,9 @@ public class TokenServiceImpl implements TokenService {
                 redisService.deleteObject(SecurityConstants.MANY_ONLINE_USER_KEY + JwtUtils.getUserId(token));
             }
         }
-
-
         //用户退出登陆
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        IAuthorityService.logout();
+      /*  IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
+        IAuthorityService.logout();*/
     }
 
     @Override
@@ -154,8 +162,13 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void sendSms(SendSmsRequest sendSmsRequest) {
         //用户发送短信前相关校验或是其他逻辑
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        IAuthorityService.sendSmsBefore(sendSmsRequest);
+        for (IAuthorityService iAuthorityService : iAuthorityService)
+        {
+            if (iAuthorityService.getLoginType().equals(sendSmsRequest.getLoginType()))
+            {
+                iAuthorityService.sendSmsBefore(sendSmsRequest);
+            }
+        }
 
         long times = redisService.getExpire(sendSmsRequest.getMessageType().name() + sendSmsRequest.getPhone(), TimeUnit.MILLISECONDS);
         if (times > 0) {
@@ -204,10 +217,11 @@ public class TokenServiceImpl implements TokenService {
     public void wxAppletRegister(RegisterRequest request) {
         //微信小程序登录时 通过code 取得 openid,session_key,unionid
         setWxAppletParam(request);
-
-        //用户注册
-        IAuthorityService IAuthorityService = SpringUtils.getBean(IAuthorityService.class);
-        IAuthorityService.wxAppletRegister(request);
+        for (IAuthorityService iAuthorityService : iAuthorityService) {
+            if (request.getLoginType().equals(iAuthorityService.getLoginType())) {
+                iAuthorityService.wxAppletRegister(request);
+            }
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.wxmblog.base.common.entity.LoginUser;
  * @create: 2023-02-13 10:41
  **/
 
-public class IAdminAuthorityServiceImpl<T extends LoginRequest> implements IAdminAuthorityService<T> {
+public class IAdminAuthorityServiceImpl<T extends LoginRequest> extends IAdminAuthorityService<T> {
     @Override
     public LoginUser adminLogin(T loginRequest) {
         return null;

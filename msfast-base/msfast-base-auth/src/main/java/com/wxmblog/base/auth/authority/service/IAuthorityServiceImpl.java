@@ -1,5 +1,6 @@
 package com.wxmblog.base.auth.authority.service;
 
+import com.wxmblog.base.auth.common.enums.LoginType;
 import com.wxmblog.base.auth.common.rest.request.LoginRequest;
 import com.wxmblog.base.auth.common.rest.request.RegisterRequest;
 import com.wxmblog.base.auth.common.rest.request.SendSmsRequest;
@@ -13,7 +14,7 @@ import com.wxmblog.base.common.entity.LoginUser;
  * @create: 2022-09-23 15:04
  **/
 
-public class IAuthorityServiceImpl<T extends LoginRequest, R extends RegisterRequest> implements IAuthorityService<T, R> {
+public class IAuthorityServiceImpl<T extends LoginRequest, R extends RegisterRequest> extends IAuthorityService<T, R> {
 
     @Override
     public void register(R registerRequest) {

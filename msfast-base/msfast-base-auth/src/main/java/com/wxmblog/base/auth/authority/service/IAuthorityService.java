@@ -1,27 +1,29 @@
 package com.wxmblog.base.auth.authority.service;
 
-import com.wxmblog.base.auth.common.rest.request.LoginRequest;
-import com.wxmblog.base.auth.common.rest.request.RegisterRequest;
-import com.wxmblog.base.auth.common.rest.request.SendSmsRequest;
-import com.wxmblog.base.auth.common.rest.request.SmsLoginRequest;
+import com.wxmblog.base.auth.common.enums.LoginType;
+import com.wxmblog.base.auth.common.rest.request.*;
 import com.wxmblog.base.common.entity.LoginUser;
+import lombok.Data;
 
 /*
  * @Author
  * @Description  有关权限相关的业务代码实现
  * @Date 21:45 2022/6/18
  **/
-public interface IAuthorityService<T extends LoginRequest, R extends RegisterRequest> {
+@Data
+public  abstract class IAuthorityService<T extends BaseLoginRequest, R extends RegisterRequest> {
 
-    void register(R registerRequest);
+    private LoginType loginType;
 
-    LoginUser login(T loginRequest);
+    public abstract void register(R registerRequest);
 
-    LoginUser smsLogin(SmsLoginRequest loginRequest);
+    public abstract LoginUser login(T loginRequest);
 
-    void logout();
+    public abstract LoginUser smsLogin(SmsLoginRequest loginRequest);
 
-    void sendSmsBefore(SendSmsRequest sendSmsRequest);
+    public abstract void logout();
 
-    void wxAppletRegister(R request);
+    public abstract  void sendSmsBefore(SendSmsRequest sendSmsRequest);
+
+    public abstract void wxAppletRegister(R request);
 }

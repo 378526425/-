@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @author ruoyi
  */
 @Data
-public class LoginRequest {
+public class LoginRequest extends BaseLoginRequest{
 
     /**
      * 用户名
